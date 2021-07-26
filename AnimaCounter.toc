@@ -1,0 +1,8 @@
+## Author: Vandiel
+## Interface: 90100
+## Notes: Anima Counter
+## Title: .|TInterface\ICONS\Spell_AnimaArdenweald_Orb:0|t Anima Counter
+## Version: 1.0
+### No Saved Variables
+
+AnimaCounter.lua
