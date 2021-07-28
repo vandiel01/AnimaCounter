@@ -86,7 +86,7 @@
 
 	local vAC_Main = CreateFrame("Frame", "vAC_Main", UIParent, BackdropTemplateMixin and "BackdropTemplate")
 		vAC_Main:SetBackdrop(Backdrop_A)
-		vAC_Main:SetSize(160,120)
+		vAC_Main:SetSize(160,110)
 		vAC_Main:ClearAllPoints()
 		vAC_Main:SetPoint("CENTER", UIParent, 0, 0)
 		vAC_Main:EnableMouse(true)
@@ -115,26 +115,26 @@
 		HdrPos = -26
 		for i = 1, #AnimaRow do
 			local vAR = CreateFrame("Frame","vAR"..i,vAC_Main,BackdropTemplateMixin and "BackdropTemplate")
-				if i == 4 then x = 10 else x = 22 end
+				if i == 4 then x = 5 else x = 20 end
 				vAR:SetSize(80,x)
 				vAR:SetPoint("TOPLEFT",vAC_Main,2,HdrPos)
 					vAR.Text = vAR:CreateFontString("vAR"..i)
 					vAR.Text:SetFont(FontStyle[1], Font_Sm)
 					vAR.Text:SetPoint("RIGHT", "vAR"..i, -4, 0)
 					vAR.Text:SetText(Colors(6,AnimaRow[i]))
-			if i == 3 then HdrPos = HdrPos - 8 else HdrPos = HdrPos - 19 end
+			if i == 3 then HdrPos = HdrPos - 3 else HdrPos = HdrPos - 19 end
 		end
 		HdrPos = -26
 		for i = 1, 5 do
 			local vAV = CreateFrame("Frame","vAV"..i,vAC_Main,BackdropTemplateMixin and "BackdropTemplate")
-				if i == 4 then x = 10 else x = 22 end
-				vAV:SetSize(80,x)
+				if i == 4 then x = 5 else x = 20 end
+				vAV:SetSize(60,x)
 				vAV:SetPoint("TOPLEFT",vAC_Main,82,HdrPos)
 					vAV.Text = vAV:CreateFontString("vAV"..i)
 					vAV.Text:SetFont(FontStyle[1], Font_Sm)
 					vAV.Text:SetPoint("LEFT", "vAV"..i, 4, 0)
 					vAV.Text:SetText("")
-			if i == 3 then HdrPos = HdrPos - 8 else HdrPos = HdrPos - 19 end
+			if i == 3 then HdrPos = HdrPos - 3 else HdrPos = HdrPos - 19 end
 		end
 		
 ------------------------------------------------------------------------
