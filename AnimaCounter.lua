@@ -1,4 +1,4 @@
-	local vAC_AppTitle = "|CFF00CCFF"..strsub(GetAddOnMetadata("AnimaCounter", "Title"),2).."|r v"..GetAddOnMetadata("AnimaCounter", "Version")
+	local vAC_AppTitle = "|CFF00CCFF"..strsub(GetAddOnMetadata("AnimaCounter", "Title"),49).."|r"
 	local vAC_PlayerLevel = UnitLevel("player")
 ------------------------------------------------------------------------
 -- Anima Counts
@@ -40,14 +40,10 @@
 			TotalCount = TotalCount + tCnt
 		end
 		
-		vAC_MiniAnima.Text:SetText(
-			"== |CFFFFFF00Anima Count|r =="..
-			"\n"..Colors(7,"In Bag: ")..(TotalPiece or 0).." ("..(TotalCount or 0)..")"..
-			"\n"..Colors(7,"In Resvr: ")..(AnimaReservoir or 0)..
-			"\n"..Colors(7,"Total: ")..((TotalCount + AnimaReservoir) or 0)..
-			"\n"..Colors(7,"==========")..
-			"\n"..Colors(7,"Til Cap: ")..((35000-(AnimaReservoir+TotalCount)) or 0)
-		)
+		_G["vAV1"].Text:SetText((TotalPiece or 0).." ("..(TotalCount or 0)..")")
+		_G["vAV2"].Text:SetText((AnimaReservoir or 0))
+		_G["vAV3"].Text:SetText(((TotalCount + AnimaReservoir) or 0))
+		_G["vAV5"].Text:SetText(((35000-(AnimaReservoir+TotalCount)) or 0))
 	end
 ------------------------------------------------------------------------
 -- Color Choice
@@ -62,7 +58,7 @@
 		end
 		return "|cFF"..ColorChoice..(t == nil and "" or t).."|r"
 	end
-
+	
 ------------------------------------------------------------------------
 -- Table of Frame Backdrops
 ------------------------------------------------------------------------
@@ -74,61 +70,73 @@
 		edgeSize = 16,
 		insets = { left = 4, right = 4, top = 4, bottom = 4 }
 	}
-	local Backdrop_B = {
-		edgeFile = "Interface\\ToolTips\\UI-Tooltip-Border",
-		bgFile = "Interface\\BankFrame\\Bank-Background",
-		tileEdge = true,
-		tileSize = 16,
-		edgeSize = 16,
-		insets = { left = 4, right = 4, top = 4, bottom = 4 }
-	}
-	local Backdrop_C = { --Temp
-		edgeFile = "Interface\\ToolTips\\UI-Tooltip-Border",
-		bgFile = "Interface\\DialogFrame\\UI-DialogBox-Gold-Background",
-		tileEdge = true,
-		tileSize = 16,
-		edgeSize = 16,
-		insets = { left = 4, right = 4, top = 4, bottom = 4 }
-	}
-	local Backdrop_NBgnd = {
-		edgeFile = "Interface\\ToolTips\\UI-Tooltip-Border",
-		tileEdge = true,
-		tileSize = 16,
-		edgeSize = 16,
-		insets = { left = 4, right = 4, top = 4, bottom = 4 }
-	}
-	local Backdrop_NBdr = {
-		bgFile = "Interface\\CHATFRAME\\CHATFRAMEBACKGROUND",
-		tileEdge = true,
-		tileSize = 16,
-		edgeSize = 16,
-		insets = { left = 2, right = 2, top = 2, bottom = 2 }
-	}
 
 	local Font_Lg = 14		--Large Font Size
 	local Font_Md = 12		--Medium Font Size
 	local Font_Sm = 10		--Small/Normal Font Size
-	local FontStyle = { "Fonts\\FRIZQT__.TTF", "Fonts\\ARIALN.ttf", "Fonts\\MORPHEUS.ttf", "Fonts\\skurri.ttf", }	
+	local FontStyle = { "Fonts\\FRIZQT__.TTF", "Fonts\\ARIALN.ttf", "Fonts\\MORPHEUS.ttf", "Fonts\\skurri.ttf", }
+	
+	local l,r,t,b,h,w,HdrPos = 0,0,0,0,0,0,0
+	-- 1 Kyrian, 2 Venthyr, 3 NightFae, 4 Necrolord
+	-- Left, Width, Height
+	local CovPic = {{ 926,52,85, }, { 856,60,83, }, { 770,75,75, }, { 696,70,90, }}
 ------------------------------------------------------------------------
 -- Mini Window for Anima Counter
 ------------------------------------------------------------------------
-	local vAC_MiniAnima = CreateFrame("Frame", "vAC_MiniAnima", UIParent, BackdropTemplateMixin and "BackdropTemplate")
-		vAC_MiniAnima:SetBackdrop(Backdrop_A)
-		vAC_MiniAnima:SetSize(170,85)
-		vAC_MiniAnima:ClearAllPoints()
-		vAC_MiniAnima:SetPoint("CENTER", UIParent, 0, 0)
-		vAC_MiniAnima:EnableMouse(true)
-		vAC_MiniAnima:SetMovable(true)
-		vAC_MiniAnima:RegisterForDrag("LeftButton")
-		vAC_MiniAnima:SetScript("OnDragStart", function() vAC_MiniAnima:StartMoving() end)
-		vAC_MiniAnima:SetScript("OnDragStop", function() vAC_MiniAnima:StopMovingOrSizing() end)
-		vAC_MiniAnima:SetClampedToScreen(true)
-			vAC_MiniAnima.Text = vAC_MiniAnima:CreateFontString("T")
-			vAC_MiniAnima.Text:SetFont(FontStyle[1], Font_Md, "OUTLINE")
-			vAC_MiniAnima.Text:SetPoint("CENTER", vAC_MiniAnima, 0, 0)
-			vAC_MiniAnima.Text:SetText("Anima Count: 0 (0)\n==========\nIn Reservoir: 0\nTil Cap: 0")
-		vAC_MiniAnima:Hide()
 
+	local vAC_Main = CreateFrame("Frame", "vAC_Main", UIParent, BackdropTemplateMixin and "BackdropTemplate")
+		vAC_Main:SetBackdrop(Backdrop_A)
+		vAC_Main:SetSize(160,120)
+		vAC_Main:ClearAllPoints()
+		vAC_Main:SetPoint("CENTER", UIParent, 0, 0)
+		vAC_Main:EnableMouse(true)
+		vAC_Main:SetMovable(true)
+		vAC_Main:RegisterForDrag("LeftButton")
+		vAC_Main:SetScript("OnDragStart", function() vAC_Main:StartMoving() end)
+		vAC_Main:SetScript("OnDragStop", function() vAC_Main:StopMovingOrSizing() end)
+		vAC_Main:SetClampedToScreen(true)
+
+	local vAC_Title = CreateFrame("Frame", "vAC_Title", vAC_Main, BackdropTemplateMixin and "BackdropTemplate")
+		vAC_Title:SetSize(vAC_Main:GetWidth()-5,24)
+		vAC_Title:ClearAllPoints()
+		vAC_Title:SetPoint("TOP", vAC_Main, 0, -3)
+
+		vAC_Title.Text = vAC_Title:CreateFontString("T")
+		vAC_Title.Text:SetFont(FontStyle[1], Font_Lg, "OUTLINE")
+		vAC_Title.Text:SetPoint("LEFT", vAC_Title, 20, 0)
+		vAC_Title.Text:SetText(vAC_AppTitle)
+		
+		local vAC_TitleX = CreateFrame("Button", "vAC_TitleX", vAC_Title, "UIPanelCloseButton")
+			vAC_TitleX:SetSize(26,26)
+			vAC_TitleX:SetPoint("RIGHT", vAC_Title, 3, 3)
+			vAC_TitleX:SetScript("OnClick", function() vAC_Main:Hide() end)
+
+	local AnimaRow = { "In Bag/Bank:", "In Reservoir:", "Total:", "", "Til Cap:" }
+		HdrPos = -26
+		for i = 1, #AnimaRow do
+			local vAR = CreateFrame("Frame","vAR"..i,vAC_Main,BackdropTemplateMixin and "BackdropTemplate")
+				if i == 4 then x = 10 else x = 22 end
+				vAR:SetSize(80,x)
+				vAR:SetPoint("TOPLEFT",vAC_Main,2,HdrPos)
+					vAR.Text = vAR:CreateFontString("vAR"..i)
+					vAR.Text:SetFont(FontStyle[1], Font_Sm)
+					vAR.Text:SetPoint("RIGHT", "vAR"..i, -4, 0)
+					vAR.Text:SetText(Colors(6,AnimaRow[i]))
+			if i == 3 then HdrPos = HdrPos - 8 else HdrPos = HdrPos - 19 end
+		end
+		HdrPos = -26
+		for i = 1, 5 do
+			local vAV = CreateFrame("Frame","vAV"..i,vAC_Main,BackdropTemplateMixin and "BackdropTemplate")
+				if i == 4 then x = 10 else x = 22 end
+				vAV:SetSize(80,x)
+				vAV:SetPoint("TOPLEFT",vAC_Main,82,HdrPos)
+					vAV.Text = vAV:CreateFontString("vAV"..i)
+					vAV.Text:SetFont(FontStyle[1], Font_Sm)
+					vAV.Text:SetPoint("LEFT", "vAV"..i, 4, 0)
+					vAV.Text:SetText("")
+			if i == 3 then HdrPos = HdrPos - 8 else HdrPos = HdrPos - 19 end
+		end
+		
 ------------------------------------------------------------------------
 -- Fire Up Events
 ------------------------------------------------------------------------
@@ -149,17 +157,29 @@
 		end
 		if event == "PLAYER_LOGIN" then
 			DEFAULT_CHAT_FRAME:AddMessage("Loaded: "..vAC_AppTitle)
-			
-			if vAC_PlayerLevel <= 59 then
-				vAC_MiniAnima:Hide()
+			SLASH_AnimaCounter1 = '/ac'
+			SLASH_AnimaCounter2 = '/acount'
+			SLASH_AnimaCounter3 = '/animacounter'
+			SlashCmdList["AnimaCounter"] = function(cmd)
+				if not vAC_Main:IsVisible() then vAC_Main:Show() else vAC_Main:Hide() end
+			end
+		
+			if (vAC_PlayerLevel <= 49) then
+				vAC_Main:Hide()
 			else
-				vAC_MiniAnima:Show()
+				local cID = C_Covenants.GetActiveCovenantID()
+				if (cID == 0 or cID == nil) then cID = 1 end
+				w, h, l, r, t, b = 1024, 512, CovPic[cID][1], CovPic[cID][1]+CovPic[cID][2], 362, CovPic[cID][3]+362
+				vAC_Title.Logo = vAC_Title:CreateTexture(nil, "ARTWORK")
+				vAC_Title.Logo:SetSize(CovPic[cID][2]*.55,CovPic[cID][3]*.55)
+				vAC_Title.Logo:SetPoint("TOPLEFT", vAC_Title, -15, 20)
+				vAC_Title.Logo:SetTexture("Interface\\CovenantChoice\\CovenantChoiceCelebration")
+				vAC_Title.Logo:SetTexCoord(l/w, r/w, t/h, b/h)
 				Status = xpcall(AnimaCount(),err)
 			end
-			
 			vAC_OnUpdate:UnregisterEvent("PLAYER_LOGIN")
 		end
 		if (event == "PLAYER_MONEY") or (event == "CURRENCY_DISPLAY_UPDATE") or (event == "BAG_UPDATE") then
-			if vAC_MiniAnima:IsVisible() then Status = xpcall(AnimaCount(),err) end
+			if vAC_Main:IsVisible() then Status = xpcall(AnimaCount(),err) end
 		end
 	end)
