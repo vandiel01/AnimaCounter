@@ -9,5 +9,7 @@ The use of [BugGrabber] https://www.curseforge.com/wow/addons/bug-grabber and [B
 You can also contribute to the addon by [Donate] https://paypal.me/Vandiel01
 
 ## Image Samples
-###### Normal Frame
+###### 2nd Version
+ ![GHSample2](Images/Sample2.png)
+###### 1st Version
  ![GHSample1](Images/Sample1.png)
