@@ -42,6 +42,7 @@
 			
 			if vAC_DEBUG and (iName ~= nil or AnimaCount ~= 0) then
 				print(iName.." ["..AnimaCount.."]")
+				vAC_DEBUG = false
 			end
 		end
 		
