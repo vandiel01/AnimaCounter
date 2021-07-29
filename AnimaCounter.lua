@@ -1,5 +1,6 @@
 	local vAC_AppTitle = "|CFF00CCFF"..strsub(GetAddOnMetadata("AnimaCounter", "Title"),49).."|r"
 	local vAC_PlayerLevel = UnitLevel("player")
+	local vAC_DEBUG = false
 ------------------------------------------------------------------------
 -- Anima Counts
 ------------------------------------------------------------------------	
@@ -38,10 +39,14 @@
 			if iRare == 3 then tCnt = AnimaCount*35 end
 			if iRare == 4 then tCnt = AnimaCount*250 end
 			TotalCount = TotalCount + tCnt
+			
+			if vAC_DEBUG and (iName ~= nil or AnimaCount ~= 0) then
+				print(iName.." ["..AnimaCount.."]")
+			end
 		end
 		
 		-- Test Number
-		--vVa.Text:SetText("9,999 (9,999,999)")
+		-- vVa.Text:SetText("9,999 (9,999,999)")
 		vVa.Text:SetText((BreakUpLargeNumbers(TotalPiece) or 0).." ("..(BreakUpLargeNumbers(TotalCount) or 0)..")")
 		vVb.Text:SetText(BreakUpLargeNumbers(AnimaReservoir) or 0)
 		vVc.Text:SetText(BreakUpLargeNumbers(TotalCount + AnimaReservoir) or 0)
@@ -211,7 +216,12 @@
 			SLASH_AnimaCounter2 = '/acount'
 			SLASH_AnimaCounter3 = '/animacounter'
 			SlashCmdList["AnimaCounter"] = function(cmd)
-				if not vAC_Main:IsVisible() then vAC_Main:Show() else vAC_Main:Hide() end
+				if cmd == "miss" then
+					vAC_DEBUG = true
+					Status = xpcall(AnimaCount(),err)
+				else
+					if not vAC_Main:IsVisible() then vAC_Main:Show() else vAC_Main:Hide() end
+				end
 			end
 		
 			if (vAC_PlayerLevel <= 49) then
