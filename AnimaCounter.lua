@@ -40,10 +40,12 @@
 			TotalCount = TotalCount + tCnt
 		end
 		
-		_G["vAV1"].Text:SetText((TotalPiece or 0).." ("..(TotalCount or 0)..")")
-		_G["vAV2"].Text:SetText((AnimaReservoir or 0))
-		_G["vAV3"].Text:SetText(((TotalCount + AnimaReservoir) or 0))
-		_G["vAV5"].Text:SetText(((35000-(AnimaReservoir+TotalCount)) or 0))
+		-- Test Number
+		--vVa.Text:SetText("9,999 (9,999,999)")
+		vVa.Text:SetText((BreakUpLargeNumbers(TotalPiece) or 0).." ("..(BreakUpLargeNumbers(TotalCount) or 0)..")")
+		vVb.Text:SetText(BreakUpLargeNumbers(AnimaReservoir) or 0)
+		vVc.Text:SetText(BreakUpLargeNumbers(TotalCount + AnimaReservoir) or 0)
+		vVd.Text:SetText(BreakUpLargeNumbers(35000-(AnimaReservoir+TotalCount)) or 0)
 	end
 ------------------------------------------------------------------------
 -- Color Choice
@@ -76,17 +78,17 @@
 	local Font_Sm = 10		--Small/Normal Font Size
 	local FontStyle = { "Fonts\\FRIZQT__.TTF", "Fonts\\ARIALN.ttf", "Fonts\\MORPHEUS.ttf", "Fonts\\skurri.ttf", }
 	
-	local l,r,t,b,h,w,HdrPos = 0,0,0,0,0,0,0
+	local l,r,t,b,h,w,hS,wS,HdrPos = 0,0,0,0,0,0,0,0,0
 	-- 1 Kyrian, 2 Venthyr, 3 NightFae, 4 Necrolord
 	-- Left, Width, Height
 	local CovPic = {{ 926,52,85, }, { 856,60,83, }, { 770,75,75, }, { 696,70,90, }}
 ------------------------------------------------------------------------
--- Mini Window for Anima Counter
+-- Window for Anima Counter
 ------------------------------------------------------------------------
 
 	local vAC_Main = CreateFrame("Frame", "vAC_Main", UIParent, BackdropTemplateMixin and "BackdropTemplate")
 		vAC_Main:SetBackdrop(Backdrop_A)
-		vAC_Main:SetSize(160,110)
+		vAC_Main:SetSize(175,95)
 		vAC_Main:ClearAllPoints()
 		vAC_Main:SetPoint("CENTER", UIParent, 0, 0)
 		vAC_Main:EnableMouse(true)
@@ -103,7 +105,7 @@
 
 		vAC_Title.Text = vAC_Title:CreateFontString("T")
 		vAC_Title.Text:SetFont(FontStyle[1], Font_Lg, "OUTLINE")
-		vAC_Title.Text:SetPoint("LEFT", vAC_Title, 20, 0)
+		vAC_Title.Text:SetPoint("CENTER", vAC_Title, 0, 0)
 		vAC_Title.Text:SetText(vAC_AppTitle)
 		
 		local vAC_TitleX = CreateFrame("Button", "vAC_TitleX", vAC_Title, "UIPanelCloseButton")
@@ -111,32 +113,80 @@
 			vAC_TitleX:SetPoint("RIGHT", vAC_Title, 3, 3)
 			vAC_TitleX:SetScript("OnClick", function() vAC_Main:Hide() end)
 
-	local AnimaRow = { "In Bag/Bank:", "In Reservoir:", "Total:", "", "Til Cap:" }
-		HdrPos = -26
-		for i = 1, #AnimaRow do
-			local vAR = CreateFrame("Frame","vAR"..i,vAC_Main,BackdropTemplateMixin and "BackdropTemplate")
-				if i == 4 then x = 5 else x = 20 end
-				vAR:SetSize(80,x)
-				vAR:SetPoint("TOPLEFT",vAC_Main,2,HdrPos)
-					vAR.Text = vAR:CreateFontString("vAR"..i)
-					vAR.Text:SetFont(FontStyle[1], Font_Sm)
-					vAR.Text:SetPoint("RIGHT", "vAR"..i, -4, 0)
-					vAR.Text:SetText(Colors(6,AnimaRow[i]))
-			if i == 3 then HdrPos = HdrPos - 3 else HdrPos = HdrPos - 19 end
-		end
-		HdrPos = -26
-		for i = 1, 5 do
-			local vAV = CreateFrame("Frame","vAV"..i,vAC_Main,BackdropTemplateMixin and "BackdropTemplate")
-				if i == 4 then x = 5 else x = 20 end
-				vAV:SetSize(60,x)
-				vAV:SetPoint("TOPLEFT",vAC_Main,82,HdrPos)
-					vAV.Text = vAV:CreateFontString("vAV"..i)
-					vAV.Text:SetFont(FontStyle[1], Font_Sm)
-					vAV.Text:SetPoint("LEFT", "vAV"..i, 4, 0)
-					vAV.Text:SetText("")
-			if i == 3 then HdrPos = HdrPos - 3 else HdrPos = HdrPos - 19 end
-		end
-		
+	local AnimaRow = { "In Bag/Bank:", "In Reservoir:", "Total:", "Til Cap:" }
+	local vTa = CreateFrame("Frame","vTa",vAC_Main,BackdropTemplateMixin and "BackdropTemplate")
+	--	vTa:SetBackdrop(Backdrop_A)
+		vTa:SetSize(75,20)
+		vTa:SetPoint("TOPLEFT",vAC_Main,2,-22)
+		vTa.Text = vTa:CreateFontString("vTa")
+		vTa.Text:SetFont(FontStyle[1], Font_Sm)
+		vTa.Text:SetPoint("RIGHT", "vTa", -4, 0)
+		vTa.Text:SetText(Colors(7,AnimaRow[1]))
+		local vVa = CreateFrame("Frame","vVa",vAC_Main,BackdropTemplateMixin and "BackdropTemplate")
+	--		vVa:SetBackdrop(Backdrop_A)
+			vVa:SetSize(84,20)
+			vVa:SetPoint("TOPLEFT",vAC_Main,72,-22)
+			vVa.Text = vVa:CreateFontString("vVa")
+			vVa.Text:SetFont(FontStyle[1], Font_Sm)
+			vVa.Text:SetPoint("LEFT", "vVa", 4, 0)
+			vVa.Text:SetText("--- (---)")
+			
+	local vTb = CreateFrame("Frame","vTb",vAC_Main,BackdropTemplateMixin and "BackdropTemplate")
+	--	vTb:SetBackdrop(Backdrop_A)
+		vTb:SetSize(75,20)
+		vTb:SetPoint("TOPLEFT",vAC_Main,2,-38)
+		vTb.Text = vTb:CreateFontString("vTb")
+		vTb.Text:SetFont(FontStyle[1], Font_Sm)
+		vTb.Text:SetPoint("RIGHT", "vTb", -4, 0)
+		vTb.Text:SetText(Colors(7,AnimaRow[2]))
+		local vVb = CreateFrame("Frame","vVb",vAC_Main,BackdropTemplateMixin and "BackdropTemplate")
+	--		vVb:SetBackdrop(Backdrop_A)
+			vVb:SetSize(84,20)
+			vVb:SetPoint("TOPLEFT",vAC_Main,72,-38)
+			vVb.Text = vVb:CreateFontString("vVb")
+			vVb.Text:SetFont(FontStyle[1], Font_Sm)
+			vVb.Text:SetPoint("LEFT", "vVb", 4, 0)
+			vVb.Text:SetText("---")
+			
+	local vTc = CreateFrame("Frame","vTc",vAC_Main,BackdropTemplateMixin and "BackdropTemplate")
+	--	vTc:SetBackdrop(Backdrop_A)
+		vTc:SetSize(75,18)
+		vTc:SetPoint("TOPLEFT",vAC_Main,2,-54)
+		vTc.Text = vTc:CreateFontString("vTc")
+		vTc.Text:SetFont(FontStyle[1], Font_Sm)
+		vTc.Text:SetPoint("RIGHT", "vTc", -4, 0)
+		vTc.Text:SetText(Colors(7,AnimaRow[3]))
+		local vVc = CreateFrame("Frame","vVc",vAC_Main,BackdropTemplateMixin and "BackdropTemplate")
+	--		vVc:SetBackdrop(Backdrop_A)
+			vVc:SetSize(84,18)
+			vVc:SetPoint("TOPLEFT",vAC_Main,72,-54)
+			vVc.Text = vVc:CreateFontString("vVc")
+			vVc.Text:SetFont(FontStyle[1], Font_Sm)
+			vVc.Text:SetPoint("LEFT", "vVc", 4, 0)
+			vVc.Text:SetText("---")
+
+	local vAC_Line = vAC_Main:CreateTexture("vAC_Line")
+		vAC_Line:SetSize(165,2)
+		vAC_Line:SetTexture("Interface\\BUTTONS\\WHITE8X8")
+		vAC_Line:SetColorTexture(.6,.6,.6,.2)
+		vAC_Line:SetPoint("TOPLEFT",vAC_Main,8,-71)
+
+	local vTd = CreateFrame("Frame","vTd",vAC_Main,BackdropTemplateMixin and "BackdropTemplate")
+	--	vTd:SetBackdrop(Backdrop_A)
+		vTd:SetSize(75,18)
+		vTd:SetPoint("TOPLEFT",vAC_Main,2,-73)
+		vTd.Text = vTd:CreateFontString("vTd")
+		vTd.Text:SetFont(FontStyle[1], Font_Sm)
+		vTd.Text:SetPoint("RIGHT", "vTd", -4, 0)
+		vTd.Text:SetText(Colors(7,AnimaRow[4]))
+		local vVd = CreateFrame("Frame","vVd",vAC_Main,BackdropTemplateMixin and "BackdropTemplate")
+	--		vVd:SetBackdrop(Backdrop_A)
+			vVd:SetSize(84,18)
+			vVd:SetPoint("TOPLEFT",vAC_Main,72,-73)
+			vVd.Text = vVd:CreateFontString("vVd")
+			vVd.Text:SetFont(FontStyle[1], Font_Sm)
+			vVd.Text:SetPoint("LEFT", "vVd", 4, 0)
+			vVd.Text:SetText("---")
 ------------------------------------------------------------------------
 -- Fire Up Events
 ------------------------------------------------------------------------
@@ -167,13 +217,18 @@
 			if (vAC_PlayerLevel <= 49) then
 				vAC_Main:Hide()
 			else
-				local cID = C_Covenants.GetActiveCovenantID()
-				if (cID == 0 or cID == nil) then cID = 1 end
-				w, h, l, r, t, b = 1024, 512, CovPic[cID][1], CovPic[cID][1]+CovPic[cID][2], 362, CovPic[cID][3]+362
 				vAC_Title.Logo = vAC_Title:CreateTexture(nil, "ARTWORK")
-				vAC_Title.Logo:SetSize(CovPic[cID][2]*.55,CovPic[cID][3]*.55)
-				vAC_Title.Logo:SetPoint("TOPLEFT", vAC_Title, -15, 20)
+				local cID = C_Covenants.GetActiveCovenantID()
+				w, h = 1024, 512
+				if (cID == 0 or cID == nil) then
+					l, r, t, b, wS, hS = 434, 540, 372, 475, 106, 103
+					vAC_Title.Logo:SetPoint("TOPLEFT", vAC_Title, -21, 21)
+				else
+					l, r, t, b, wS, hS = CovPic[cID][1], CovPic[cID][1]+CovPic[cID][2], 362, CovPic[cID][3]+362, CovPic[cID][2], CovPic[cID][3]
+					vAC_Title.Logo:SetPoint("TOPLEFT", vAC_Title, -12, 12)
+				end
 				vAC_Title.Logo:SetTexture("Interface\\CovenantChoice\\CovenantChoiceCelebration")
+				vAC_Title.Logo:SetSize(wS*.40,hS*.40)
 				vAC_Title.Logo:SetTexCoord(l/w, r/w, t/h, b/h)
 				Status = xpcall(AnimaCount(),err)
 			end
