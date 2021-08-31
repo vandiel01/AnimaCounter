@@ -1,11 +1,9 @@
-	local vAC_AppTitle = "|CFF00CCFF"..strsub(GetAddOnMetadata("AnimaCounter", "Title"),49).."|r"
+	local vAC_AppTitle = "|CFF00CCFF"..strsub(GetAddOnMetadata("AnimaCounter", "Title"),49).."|r v"..GetAddOnMetadata("AnimaCounter", "Version")
 	local vAC_PlayerLevel = UnitLevel("player")
-	local vAC_DEBUG = false
 ------------------------------------------------------------------------
 -- Anima Counts
 ------------------------------------------------------------------------	
 	function AnimaCount()
-		
 		local AnimaID = {
 			181368, 181377, 181477, 181478, 181479, 181540, 181541,	181544,	181545, 181546,
 			181547, 181548, 181549, 181550, 181551, 181552, 181621, 181622, 181642, 181643,
@@ -25,33 +23,30 @@
 			
 			187175, 187347, 187349, 187517,
 		}
-		local TotalCount, TotalPiece = 0, 0
+		local TotalCount, TotalItem = 0, 0
 		local AnimaReservoir = C_CurrencyInfo.GetCurrencyInfo(1813).quantity
+		local MaxAnimaTotal = C_CurrencyInfo.GetCurrencyInfo(1813).maxQuantity
 		
 		for a = 1, #AnimaID do
-			local AnimaCount = GetItemCount(AnimaID[a],true,true)
-				TotalPiece = TotalPiece + AnimaCount
+			local InBagBank = GetItemCount(AnimaID[a],true)
+				TotalItem = TotalItem + InBagBank
 			
 			local iName, _, iRare = GetItemInfo(AnimaID[a])		
 			local tCnt = 0
 
-			if iRare == 2 then tCnt = AnimaCount*5 end
-			if iRare == 3 then tCnt = AnimaCount*35 end
-			if iRare == 4 then tCnt = AnimaCount*250 end
+			if iRare == 2 then tCnt = InBagBank*5 end
+			if iRare == 3 then tCnt = InBagBank*35 end
+			if iRare == 4 then tCnt = InBagBank*250 end
 			TotalCount = TotalCount + tCnt
-			
-			if vAC_DEBUG and (iName ~= nil or AnimaCount ~= 0) then
-				print(iName.." ["..AnimaCount.."]")
-				vAC_DEBUG = false
-			end
+	
 		end
-		
+
 		-- Test Number
 		-- vVa.Text:SetText("9,999 (9,999,999)")
-		vVa.Text:SetText((BreakUpLargeNumbers(TotalPiece) or 0).." ("..(BreakUpLargeNumbers(TotalCount) or 0)..")")
+		vVa.Text:SetText((BreakUpLargeNumbers(TotalItem) or 0).." ("..(BreakUpLargeNumbers(TotalCount) or 0)..")")
 		vVb.Text:SetText(BreakUpLargeNumbers(AnimaReservoir) or 0)
 		vVc.Text:SetText(BreakUpLargeNumbers(TotalCount + AnimaReservoir) or 0)
-		vVd.Text:SetText(BreakUpLargeNumbers(35000-(AnimaReservoir+TotalCount)) or 0)
+		vVd.Text:SetText(BreakUpLargeNumbers(MaxAnimaTotal-(AnimaReservoir+TotalCount)) or 0)
 	end
 ------------------------------------------------------------------------
 -- Color Choice
@@ -110,8 +105,8 @@
 		vAC_Title:SetPoint("TOP", vAC_Main, 0, -3)
 
 		vAC_Title.Text = vAC_Title:CreateFontString("T")
-		vAC_Title.Text:SetFont(FontStyle[1], Font_Lg, "OUTLINE")
-		vAC_Title.Text:SetPoint("CENTER", vAC_Title, 0, 0)
+		vAC_Title.Text:SetFont(FontStyle[1], Font_Md, "OUTLINE")
+		vAC_Title.Text:SetPoint("CENTER", vAC_Title, 0, 2)
 		vAC_Title.Text:SetText(vAC_AppTitle)
 		
 		local vAC_TitleX = CreateFrame("Button", "vAC_TitleX", vAC_Title, "UIPanelCloseButton")
@@ -193,6 +188,15 @@
 			vVd.Text:SetFont(FontStyle[1], Font_Sm)
 			vVd.Text:SetPoint("LEFT", "vVd", 4, 0)
 			vVd.Text:SetText("---")
+		
+	-- Tooltips
+	--local vAC_TooltipList = CreateFrame("Button", "vAC_TooltipList", vAC_Main)
+	--	vAC_TooltipList:SetSize(24, 24)
+	--	vAC_TooltipList:SetNormalTexture("Interface\\MINIMAP\\Minimap-Waypoint-MapPin-Untracked")
+	--	vAC_TooltipList:ClearAllPoints()
+	--	vAC_TooltipList:SetPoint("BOTTOMRIGHT", vAC_Main, -2, 1)
+	--	vAC_TooltipList:SetScript("OnEnter", function() vAC_Tooltip:Show() end)
+	--	vAC_TooltipList:SetScript("OnLeave", function() vAC_Tooltip:Hide() end)
 ------------------------------------------------------------------------
 -- Fire Up Events
 ------------------------------------------------------------------------
@@ -217,28 +221,24 @@
 			SLASH_AnimaCounter2 = '/acount'
 			SLASH_AnimaCounter3 = '/animacounter'
 			SlashCmdList["AnimaCounter"] = function(cmd)
-				if cmd == "miss" then
-					vAC_DEBUG = true
-					Status = xpcall(AnimaCount(),err)
-				else
-					if not vAC_Main:IsVisible() then vAC_Main:Show() else vAC_Main:Hide() end
-				end
+				if not vAC_Main:IsVisible() then vAC_Main:Show() else vAC_Main:Hide() end
 			end
-		
-			if (vAC_PlayerLevel <= 49) then
+			
+			if (vAC_PlayerLevel <= 59) then
+			--if (vAC_PlayerLevel <= 49) or (C_QuestLog.IsQuestFlaggedCompleted(60545) == false) then
 				vAC_Main:Hide()
 			else
 				vAC_Title.Logo = vAC_Title:CreateTexture(nil, "ARTWORK")
+				vAC_Title.Logo:SetTexture("Interface\\CovenantChoice\\CovenantChoiceCelebration")
 				local cID = C_Covenants.GetActiveCovenantID()
 				w, h = 1024, 512
 				if (cID == 0 or cID == nil) then
-					l, r, t, b, wS, hS = 434, 540, 372, 475, 106, 103
+					l, r, t, b, wS, hS = 434, 540, 372, 475, 92, 89
 					vAC_Title.Logo:SetPoint("TOPLEFT", vAC_Title, -21, 21)
 				else
 					l, r, t, b, wS, hS = CovPic[cID][1], CovPic[cID][1]+CovPic[cID][2], 362, CovPic[cID][3]+362, CovPic[cID][2], CovPic[cID][3]
 					vAC_Title.Logo:SetPoint("TOPLEFT", vAC_Title, -12, 12)
 				end
-				vAC_Title.Logo:SetTexture("Interface\\CovenantChoice\\CovenantChoiceCelebration")
 				vAC_Title.Logo:SetSize(wS*.40,hS*.40)
 				vAC_Title.Logo:SetTexCoord(l/w, r/w, t/h, b/h)
 				Status = xpcall(AnimaCount(),err)
