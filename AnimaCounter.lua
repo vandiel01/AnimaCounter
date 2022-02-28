@@ -22,6 +22,8 @@
 			186200,	186201,	186202, 186204,	186205, 186206,
 			
 			187175, 187347, 187349, 187517,
+			
+			189544, 189864, 189865, 
 		}
 		local TotalCount, TotalItem = 0, 0
 		local AnimaReservoir = C_CurrencyInfo.GetCurrencyInfo(1813).quantity
