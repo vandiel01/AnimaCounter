@@ -88,7 +88,6 @@
 ------------------------------------------------------------------------
 -- Window for Anima Counter
 ------------------------------------------------------------------------
-
 	local vAC_Main = CreateFrame("Frame", "vAC_Main", UIParent, BackdropTemplateMixin and "BackdropTemplate")
 		vAC_Main:SetBackdrop(Backdrop_A)
 		vAC_Main:SetSize(175,95)
@@ -112,11 +111,11 @@
 		vAC_Title.Text:SetText(vAC_AppTitle)
 		
 		local vAC_TitleX = CreateFrame("Button", "vAC_TitleX", vAC_Title, "UIPanelCloseButton")
-			vAC_TitleX:SetSize(26,26)
-			vAC_TitleX:SetPoint("RIGHT", vAC_Title, 3, 3)
+			vAC_TitleX:SetSize(20, 20)
+			vAC_TitleX:SetPoint("TOPRIGHT", vAC_Title, -1, -1)
 			vAC_TitleX:SetScript("OnClick", function() vAC_Main:Hide() end)
 
-	local AnimaRow = { "In Bag/Bank:", "In Reservoir:", "Total:", "Til Cap:" }
+	local AnimaRow = { "Bag/Bank:", "Reservoir:", "Total:", "Til Cap:" }
 	local vTa = CreateFrame("Frame","vTa",vAC_Main,BackdropTemplateMixin and "BackdropTemplate")
 	--	vTa:SetBackdrop(Backdrop_A)
 		vTa:SetSize(75,20)
@@ -190,15 +189,6 @@
 			vVd.Text:SetFont(FontStyle[1], Font_Sm)
 			vVd.Text:SetPoint("LEFT", "vVd", 4, 0)
 			vVd.Text:SetText("---")
-		
-	-- Tooltips
-	--local vAC_TooltipList = CreateFrame("Button", "vAC_TooltipList", vAC_Main)
-	--	vAC_TooltipList:SetSize(24, 24)
-	--	vAC_TooltipList:SetNormalTexture("Interface\\MINIMAP\\Minimap-Waypoint-MapPin-Untracked")
-	--	vAC_TooltipList:ClearAllPoints()
-	--	vAC_TooltipList:SetPoint("BOTTOMRIGHT", vAC_Main, -2, 1)
-	--	vAC_TooltipList:SetScript("OnEnter", function() vAC_Tooltip:Show() end)
-	--	vAC_TooltipList:SetScript("OnLeave", function() vAC_Tooltip:Hide() end)
 ------------------------------------------------------------------------
 -- Fire Up Events
 ------------------------------------------------------------------------
@@ -236,12 +226,12 @@
 				w, h = 1024, 512
 				if (cID == 0 or cID == nil) then
 					l, r, t, b, wS, hS = 434, 540, 372, 475, 92, 89
-					vAC_Title.Logo:SetPoint("TOPLEFT", vAC_Title, -21, 21)
+					vAC_Title.Logo:SetPoint("TOPLEFT", vAC_Title, -16, 16)
 				else
 					l, r, t, b, wS, hS = CovPic[cID][1], CovPic[cID][1]+CovPic[cID][2], 362, CovPic[cID][3]+362, CovPic[cID][2], CovPic[cID][3]
-					vAC_Title.Logo:SetPoint("TOPLEFT", vAC_Title, -12, 12)
+					vAC_Title.Logo:SetPoint("TOPLEFT", vAC_Title, -6, 6)
 				end
-				vAC_Title.Logo:SetSize(wS*.40,hS*.40)
+				vAC_Title.Logo:SetSize(wS*.35,hS*.35)
 				vAC_Title.Logo:SetTexCoord(l/w, r/w, t/h, b/h)
 				Status = xpcall(AnimaCount(),err)
 			end

@@ -1,5 +1,5 @@
 ## Author: Vandiel
-## Interface: 90200
+## Interface: 100002
 ## Notes: Anima Counter
 ## Title: .|TInterface\ICONS\Spell_AnimaArdenweald_Orb:0|t Anima Counter
 ## Version: 1.3
